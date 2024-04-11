@@ -1,0 +1,30 @@
+{% extends "template.html" %}
+{% block conteudo %}
+
+        <a class="btn btn-primary" href="{{url_for('novo')}}">Nova Ave</a>
+        <a class="btn btn-primary" href="{{url_for('login')}}">Entrar</a>
+        <a class="btn btn-danger" href="{{url_for('logout')}}">Sair</a>
+
+        <table class="table table-striped table-responsive table-bordered">
+          <thead class="thead-default">
+               <tr>
+                  <th>Nome Popular</th>
+                  <th>Espécie</th>
+                  <th>Família</th>
+               </tr>
+          </thead>
+            <tbody>
+                {% for ave in aves%}
+                <tr>
+                  <td>{{ ave.nome_popular }}</td>
+                  <td>{{ ave.especie }}</td>
+                  <td>{{ ave.familia }}</td>
+                  <td>
+                      <a href="{{ url_for('editar', id=ave.id) }}">Editar</a>
+                      <a href="{{ url_for('deletar', id=ave.id) }}">Deletar</a>
+                  </td>
+                </tr>
+               {%endfor%}
+            </tbody>
+        </table>
+{% endblock %}
