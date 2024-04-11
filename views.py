@@ -4,7 +4,7 @@ from models import *
 
 
 @app.route('/')
-def index():
+def index():https://github.com/adrianooss/passaroteca_2_0.git
     lista = Aves.query.order_by(Aves.id)
     return render_template('lista.html', titulo='Aves', aves=lista)
 
