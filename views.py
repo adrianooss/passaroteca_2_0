@@ -1,10 +1,12 @@
-from flask import  render_template, redirect, url_for, request, flash, session
+from flask import render_template, redirect, url_for, request, flash, session, send_from_directory
 from passaroteca import app, db
 from models import *
+import time
+from helpers import recupera_imagem, deleta_arquivo
 
 
 @app.route('/')
-def index():https://github.com/adrianooss/passaroteca_2_0.git
+def index():
     lista = Aves.query.order_by(Aves.id)
     return render_template('lista.html', titulo='Aves', aves=lista)
 
@@ -30,15 +32,21 @@ def criar():
     db.session.add(nova_ave)
     db.session.commit()
 
+    arquivo = request.files['arquivo']
+    upload_path = app.config['UPLOAD_PATH']
+    timestamp = time.time()
+    arquivo.save(f'{upload_path}/foto{nova_ave.id}-{timestamp}.jpg')
+
     return redirect(url_for('index'))
 
 
 @app.route('/editar/<int:id>')
 def editar(id):
     if 'usuario_logado' not in session or session['usuario_logado'] == None:
-        return redirect(url_for('login',proxima = url_for('editar', id=id)))
+        return redirect(url_for('login', proxima = url_for('editar', id=id)))
     ave = Aves.query.filter_by(id=id).first()
-    return render_template('editar.html', ave=ave, titulo='Editando')
+    foto_ave = recupera_imagem(id)
+    return render_template('editar.html', titulo='Editando', ave=ave,  foto_ave=foto_ave)
 
 
 @app.route('/atualizar', methods=['POST',])
@@ -50,6 +58,12 @@ def atualizar():
 
     db.session.add(ave)
     db.session.commit()
+
+    arquivo = request.files['arquivo']
+    upload_path = app.config['UPLOAD_PATH']
+    timestamp = time.time()
+    deleta_arquivo(ave.id)
+    arquivo.save(f'{upload_path}/foto{ave.id}-{timestamp}.jpg')
 
     return redirect(url_for('index'))
 
@@ -96,3 +110,7 @@ def logout():
     session['usuario_logado'] = None
     flash('O usuário saiu da aplicação!')
     return redirect(url_for('index'))
+
+@app.route('/upload/<nome_arquivo>')
+def imagem(nome_arquivo):
+    return send_from_directory('upload', nome_arquivo)
