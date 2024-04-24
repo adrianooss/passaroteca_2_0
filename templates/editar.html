@@ -1,9 +1,8 @@
 {% extends "template.html" %}
 {% block conteudo %}
+      <form class="formularioAve" action="{{url_for('atualizar')}}" method="post" enctype="multipart/form-data">
 
-      <form action="{{url_for('atualizar')}}" method="post" enctype="multipart/form-data">>
-
-        <figure class="img thumbnail col-md-4">
+        <figure class="img thumbnail col-md-4 formularioImagem" >
           <img class="img-fluid" src="{{ url_for('imagem', nome_arquivo=foto_ave) }}">
           <figcaption>
             <label class="fileContainer">
@@ -14,21 +13,22 @@
         </figure>
 
         <fieldset>
-          <input type="hidden" name="id" value="{{ ave.id }}">
-          <div class="form-group">
-            <label for="nome_popular">Nome Popular</label>
-            <input type="text" id="nome_popular" name="nome_popular" class="form-control" value="{{ave.nome_popular}}">
+          <input type="hidden" name="id" value="{{ id }}">
+          {{ form.csrf_token() }}
+          <div class="form-group inputBox">
+            {{ form.nome_popular.label(class="form-label") }}
+            {{ form.nome_popular(class="form-control") }}
           </div>
-          <div class="form-group">
-            <label for="especie">Espécie</label>
-            <input type="text" id="especie" name="especie" class="form-control" value="{{ave.especie}}">
+          <div class="form-group inputBox">
+            {{ form.especie.label(class="form-label") }}
+            {{ form.especie(class="form-control") }}
           </div>
-          <div class="form-group">
-            <label for="familia">Família</label>
-            <input type="text" id="familia" name="familia" class="form-control" value="{{ave.familia}}">
+          <div class="form-group inputBox">
+            {{ form.familia.label(class="form-label") }}
+            {{ form.familia(class="form-control") }}
           </div>
-          <div>
-            <button type="submit" class="btn btn-primary btn-salvar">Salvar</button>
+          <div class="form-group buttons">
+            {{ form.salvar(class="btn btn-primary") }}
             <a class="btn btn-danger" href="{{ url_for('index') }}">Voltar</a>
           </div>
         </fieldset>
